@@ -1,32 +1,50 @@
 import { Text } from "@chakra-ui/layout";
 import { useContext, useEffect } from "react";
 import { useQuery } from "react-query";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  Navigate,
+  Outlet,
+} from "react-router-dom";
 import { privateApi } from "../api/api";
 import { signedInUserUrl } from "../api/endpoints";
 import UserContext from "../contexts/UserContext";
 import IndexPage from "../pages";
-import CreateProfile from "../pages/CreateProfile";
+import CreateOrganization from "../pages/createProfile/CreateOrganization";
+import CreateProfile from "../pages/createProfile/CreateProfile";
 import Dashboard from "../pages/dashboard/Dashboard";
 import SignIn from "../pages/SignIn";
 import Signup from "../pages/SignUp";
 
 const App = () => {
-  const [, dispatch] = useContext(UserContext);
+  const [state, dispatch] = useContext(UserContext);
 
   const {
     data: user,
     isLoading,
     error,
-  } = useQuery("getUser", async () => {
-    const res = await privateApi.get(signedInUserUrl);
+    refetch,
+  } = useQuery(
+    "getUser",
+    async () => {
+      const res = await privateApi.get(signedInUserUrl);
 
-    if (res.data.user) {
-      dispatch({ type: "SET_USER", payload: res.data.user });
+      if (res.data.user) {
+        dispatch({ type: "SET_USER", payload: res.data.user });
+      }
+
+      return res.data.user;
+    },
+    {
+      enabled: false,
     }
+  );
 
-    return res.data.user;
-  });
+  useEffect(() => {
+    refetch();
+  }, []);
 
   if (isLoading) return <Text>Loading....</Text>;
 
@@ -38,16 +56,12 @@ const App = () => {
         <Routes>
           <Route
             path='/'
-            element={!user ? <IndexPage /> : <Navigate to='/dashboard' />}
-          />
-          <Route
-            path='/signin'
-            element={!user ? <SignIn /> : <Navigate to='/dashboard' />}
-          />
-          <Route
-            path='/signup'
-            element={!user ? <Signup /> : <Navigate to='/dashboard' />}
-          />
+            element={!user ? <Outlet /> : <Navigate to='/dashboard' />}
+          >
+            <Route index element={<IndexPage />} />
+            <Route path='signin' element={<SignIn refetch={refetch} />} />
+            <Route path='/signup' element={<Signup />} />
+          </Route>
           <Route
             path='/dashboard'
             element={
@@ -69,13 +83,16 @@ const App = () => {
                 user.profile ? (
                   <Navigate to='/dashboard' replace />
                 ) : (
-                  <CreateProfile />
+                  <Outlet />
                 )
               ) : (
                 <Navigate to='/signin' />
               )
             }
-          />
+          >
+            <Route index element={<CreateProfile />} />
+            <Route path='organization' element={<CreateOrganization />} />
+          </Route>
           {/* <PublicRoute user={user} path='/signup' element={<SignUp />} /> */}
           {/* <PrivateRoute user={user} path='/app' element={<Dashb />} /> */}
         </Routes>

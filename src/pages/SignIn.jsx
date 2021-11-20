@@ -27,7 +27,7 @@ import { signinUrl } from "../api/endpoints";
 import { publicApi } from "../api/api";
 import UserContext from "../contexts/UserContext";
 
-const SignIn = () => {
+const SignIn = ({ refetch }) => {
   const navigate = useNavigate();
   const [, dispatch] = useContext(UserContext);
 
@@ -46,12 +46,8 @@ const SignIn = () => {
   const onSubmit = async (values) => {
     try {
       const res = await publicApi.post(signinUrl, values);
-      dispatch({
-        type: "SET_USER",
-        payload: res.data.result.user,
-      });
       localStorage.setItem("matter_token", res.data.result.token);
-      navigate("/dashboard");
+      refetch();
     } catch (err) {
       console.error(err.message, err);
     }
