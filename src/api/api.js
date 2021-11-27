@@ -13,7 +13,7 @@ privateApi.interceptors.request.use(function (config) {
   const token = localStorage.getItem("matter_token");
 
   if (token) {
-    config.headers = { ...config.headers, Authorization: `Bearer ${token}` };
+    config.headers = { ...config.headers, authorization: `Bearer ${token}` };
   }
 
   return config;
