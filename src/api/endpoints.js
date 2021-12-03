@@ -5,3 +5,4 @@ export const createAccountUrl = `${usersUrl}/`;
 export const signinUrl = `${usersUrl}/signin`;
 export const signedInUserUrl = `${usersUrl}`;
 export const createOrganizationUrl = `${organizationUrl}`;
+export const getOrganizationMemberUrl = `${organizationUrl}/member`;

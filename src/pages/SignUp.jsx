@@ -56,7 +56,7 @@ const Signup = () => {
         ...values,
         confirmPassword: undefined,
       });
-      navigate.push("/signin");
+      navigate("/signin");
     } catch (err) {
       console.error(err.message, err);
     }

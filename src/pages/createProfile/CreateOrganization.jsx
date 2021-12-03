@@ -32,9 +32,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { privateApi, publicApi } from "../../api/api";
 import { createOrganizationUrl, signinUrl } from "../../api/endpoints";
 import TopLogo from "../../components/TopLogo";
+import OrganizationContext from "../../contexts/OrganizationContext";
 import UserContext from "../../contexts/UserContext";
 
-const CreateOrganization = () => {
+const CreateOrganization = ({ setRefetch }) => {
+  const [, dispatch] = useContext(OrganizationContext);
+
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -55,9 +58,9 @@ const CreateOrganization = () => {
 
   const onSubmit = async (values) => {
     try {
-      const res = await privateApi.post(createOrganizationUrl, values);
-      console.log(res);
-      // refetch();
+      await privateApi.post(createOrganizationUrl, values);
+      setRefetch(true);
+      navigate("/profile/roles");
     } catch (err) {
       console.error(err.message, err);
     }

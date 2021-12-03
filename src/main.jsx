@@ -6,6 +6,7 @@ import { ColorModeScript } from "@chakra-ui/color-mode";
 import App from "./components/App";
 import Fonts from "./components/utils/Font";
 import UserProvider from "./providers/UserProvider";
+import OrganizationProvider from "./providers/OrganizationProvider";
 
 const queryClient = new QueryClient();
 
@@ -27,7 +28,9 @@ ReactDOM.render(
     <ChakraProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <UserProvider>
-          <App />
+          <OrganizationProvider>
+            <App />
+          </OrganizationProvider>
         </UserProvider>
       </QueryClientProvider>
     </ChakraProvider>
