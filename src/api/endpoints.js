@@ -6,3 +6,6 @@ export const signinUrl = `${usersUrl}/signin`;
 export const signedInUserUrl = `${usersUrl}`;
 export const createOrganizationUrl = `${organizationUrl}`;
 export const getOrganizationMemberUrl = `${organizationUrl}/member`;
+export const roleUrl = "/role";
+export const getRoleUrl = `${roleUrl}`;
+export const createRoleUrl = `${roleUrl}`;

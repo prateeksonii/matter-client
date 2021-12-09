@@ -13,9 +13,9 @@ import { getOrganizationMemberUrl, signedInUserUrl } from "../api/endpoints";
 import OrganizationContext from "../contexts/OrganizationContext";
 import UserContext from "../contexts/UserContext";
 import IndexPage from "../pages";
-import CreateOrganization from "../pages/createProfile/CreateOrganization";
-import CreateProfile from "../pages/createProfile/CreateProfile";
-import CreateRoles from "../pages/createProfile/CreateRoles";
+import CreateOrganization from "../pages/profile/CreateOrganization";
+import CreateProfile from "../pages/profile/CreateProfile";
+import UpdateRoles from "../pages/profile/UpdateRoles";
 import Dashboard from "../pages/dashboard/Dashboard";
 import SignIn from "../pages/SignIn";
 import Signup from "../pages/SignUp";
@@ -34,14 +34,10 @@ const App = () => {
       const res = await privateApi.get(signedInUserUrl);
       let isMember = false;
 
-      console.log(res.data);
-
       if (res.data.user) {
         dispatch({ type: "SET_USER", payload: res.data.user });
 
         const res2 = await privateApi.get(getOrganizationMemberUrl);
-
-        console.log(res2);
 
         if (res2.data.result.organizationMember) {
           isMember = true;
@@ -51,9 +47,9 @@ const App = () => {
           type: "SET_ORGANIZATION",
           payload: res2.data.result.organizationMember,
         });
+        setUser({ ...res.data.user, isMember });
       }
 
-      setUser({ ...res.data.user, isMember });
       setIsLoading(false);
     };
 
@@ -82,7 +78,7 @@ const App = () => {
             element={
               user ? (
                 user.isMember ? (
-                  <Dashboard />
+                  <Outlet />
                 ) : (
                   <Navigate to='/profile' replace />
                 )
@@ -90,7 +86,10 @@ const App = () => {
                 <Navigate to='/signin' />
               )
             }
-          />
+          >
+            <Route index element={<Dashboard />} />
+            <Route path='roles' element={<UpdateRoles />} />
+          </Route>
           <Route
             path='/profile'
             element={
@@ -110,8 +109,8 @@ const App = () => {
               path='organization'
               element={<CreateOrganization setRefetch={setRefetch} />}
             />
-            <Route path='roles' element={<CreateRoles />} />
           </Route>
+
           {/* <PublicRoute user={user} path='/signup' element={<SignUp />} /> */}
           {/* <PrivateRoute user={user} path='/app' element={<Dashb />} /> */}
         </Routes>

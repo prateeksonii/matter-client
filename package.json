@@ -12,6 +12,7 @@
     "@emotion/styled": "^11",
     "axios": "^0.24.0",
     "framer-motion": "^4",
+    "lodash-es": "^4.17.21",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-hook-form": "^7.20.1",
